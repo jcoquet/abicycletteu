@@ -1,27 +1,12 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  line-height: 1.6;
-  font-size: 18px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-a {
-  color: #0070f3;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-img {
-  max-width: 100%;
-  display: block;
+:root {
+  --overlay-in-duration: 1.5s;
+  --overlay-out-duration: 1.5s;
+  /* --overlay-in-delay: 0s; */
+  /* --overlay-out-duration: 2s;
+  --overlay-out-delay: 5s; */
+  --loader-delay: 3s;
+  --loader-repeat-count: 2;
+  --img-in-duration: 1.5s;
+  /* --img-out-delay: 2s;
+  --img-out-duration: 2s; */
 }
