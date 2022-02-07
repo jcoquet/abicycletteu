@@ -1,8 +1,15 @@
 import { SessionProvider } from "next-auth/react";
 import { useEffect } from "react";
-import { registerSW } from "../lib/sw.utils";
+import { Provider } from "overmind-react";
+import { createOvermind } from "overmind";
+
+import "semantic-ui-css/semantic.min.css";
+// import { registerSW } from "../lib/sw.utils";
+import { config } from "../overmind";
 
 import "../styles/global.css";
+
+const overmind = createOvermind(config);
 
 export default function App({
   Component,
@@ -14,7 +21,9 @@ export default function App({
 
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <Provider value={overmind}>
+        <Component {...pageProps} />
+      </Provider>
     </SessionProvider>
   );
 }

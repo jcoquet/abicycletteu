@@ -1,0 +1,12 @@
+{
+  "env": {
+    "es6": true
+  },
+  "globals": {
+    "L": "readonly"
+  },
+  "extends": ["next/core-web-vitals","eslint:recommended","plugin:import/recommended"],
+  "rules": {
+    "import/order": ["error", {"newlines-between": "always"}]
+  }
+}

@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "classnames": "^2.3.1",
@@ -12,10 +13,18 @@
     "lodash": "^4.17.21",
     "next": "latest",
     "next-auth": "^4.0.6",
+    "overmind": "^28.0.1",
+    "overmind-react": "^29.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "remark": "^14.0.2",
     "remark-html": "^15.0.1",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.1.1",
     "swr": "^1.1.2"
+  },
+  "devDependencies": {
+    "eslint": "8.8.0",
+    "eslint-config-next": "12.0.10"
   }
 }

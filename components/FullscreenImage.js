@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from "react";
-import styles from "./FullscreenImage.module.css";
+import { useCallback, useEffect, useState } from "react";
 import classnames from "classnames";
-import { useState } from "react/cjs/react.development";
+
+import styles from "./FullscreenImage.module.css";
 
 const FORWARD = "forward";
 const BACKWARD = "backward";
