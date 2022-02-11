@@ -9,7 +9,8 @@ import Layout from "../components/layout";
 import styles from "../styles/carte.module.css";
 import { FullscreenImage } from "../components/FullscreenImage";
 import { FolderChooser } from "../components/FolderChooser";
-import { useAppState } from "../overmind";
+import { useActions, useAppState } from "../overmind";
+import { Tools } from "../components/Tools.component";
 
 const fetcher = (session, folderId) => async () => {
   const sid = _.get(session, "data.sid");
@@ -34,10 +35,13 @@ const fetcher = (session, folderId) => async () => {
 export default function Home() {
   const session = useSession({ required: true });
   const [src, setSrc] = useState();
-  const [map, setMap] = useState();
   const [group, setGroup] = useState();
   const [freshItems, setFreshItems] = useState([]);
-  const { folderId } = useAppState();
+  const {
+    folderId,
+    leaflet: { map: getMap },
+  } = useAppState();
+  const actions = useActions();
   useSWR(
     _.has(session, "data.sid") && folderId ? "/api/article" : null,
     fetcher(session, folderId),
@@ -47,6 +51,7 @@ export default function Home() {
       refreshInterval: 5000,
     }
   );
+  const map = getMap && getMap();
 
   useEffect(() => {
     const sid = _.get(session, "data.sid");
@@ -56,27 +61,25 @@ export default function Home() {
       const currentMarkers = group.getLayers();
       const markersToRemove = _.differenceBy(currentMarkers, freshItems, "id");
       const markersToAdd = _.differenceBy(freshItems, currentMarkers, "id");
+      const shouldFitBounds =
+        markersToAdd.length > 0 || markersToRemove.length > 0;
 
-      if (markersToAdd.length > 0) {
-        markersToAdd.forEach(element => {
-          const pictureSrc = `https://${domain}:5001/webapi/entry.cgi?id=${element.additional.thumbnail.unit_id}&cache_key=${element.additional.thumbnail.cache_key}&type=%22unit%22&size=%22xl%22&api=%22SYNO.FotoTeam.Thumbnail%22&method=%22get%22&version=1&SynoToken=${synotoken}&_sid=${sid}`;
-          const marker = L.marker(Object.values(element.additional.gps), {
-            riseOnHover: true,
-          });
-          marker.addTo(group);
-          marker.id = element.id;
-          marker.bindPopup(`${element.filename}`);
-          marker.on("click", () => {
-            setSrc(pictureSrc);
-          });
+      markersToAdd.forEach(element => {
+        const pictureSrc = `https://${domain}:5001/webapi/entry.cgi?id=${element.additional.thumbnail.unit_id}&cache_key=${element.additional.thumbnail.cache_key}&type=%22unit%22&size=%22xl%22&api=%22SYNO.FotoTeam.Thumbnail%22&method=%22get%22&version=1&SynoToken=${synotoken}&_sid=${sid}`;
+        const marker = L.marker(Object.values(element.additional.gps), {
+          riseOnHover: true,
         });
-      }
+        marker.addTo(group);
+        marker.id = element.id;
+        marker.bindPopup(`${element.filename}`);
+        marker.on("click", () => {
+          setSrc(pictureSrc);
+        });
+      });
 
-      if (markersToRemove.length > 0) {
-        markersToRemove.forEach(marker => group.removeLayer(marker));
-      }
+      markersToRemove.forEach(marker => group.removeLayer(marker));
 
-      if (freshItems.length > 0) {
+      if (shouldFitBounds) {
         const allGps = freshItems.map(item =>
           Object.values(item.additional.gps)
         );
@@ -99,7 +102,11 @@ export default function Home() {
         src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         strategy="lazyOnload"
         onLoad={() => {
-          const map = L.map("map", { zoomSnap: 0.1 });
+          const map = L.map("map", {
+            zoomSnap: 0.1,
+            attributionControl: false,
+            zoomControl: false,
+          });
           const group = L.layerGroup().addTo(map);
           map.fitWorld().zoomIn();
 
@@ -109,12 +116,13 @@ export default function Home() {
           ).addTo(map);
 
           setGroup(group);
-          setMap(map);
+          actions.setMap(map);
         }}
       />
       <div id="map" className={styles.carte}></div>
       <FullscreenImage src={src} />
       <FolderChooser />
+      <Tools />
     </Layout>
   );
 }

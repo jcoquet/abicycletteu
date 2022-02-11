@@ -1,10 +1,9 @@
-import { useState, memo, createContext, useReducer, useEffect } from "react";
-import { Button, Icon, List, Modal } from "semantic-ui-react";
+import { createContext, memo, useReducer } from "react";
+import { List, Modal, Button } from "semantic-ui-react";
 
-import { useActions } from "../overmind";
+import { useActions, useAppState } from "../overmind";
 
 import { Folder } from "./Folder";
-import styles from "./FolderChooser.module.css";
 
 export const FolderChooserContext = createContext();
 
@@ -13,7 +12,6 @@ const initialState = {
 };
 
 const reducerImpl = (state, action) => {
-  console.log({ state, action });
   switch (action.type) {
     case "select_folder":
       return { folderId: action.id };
@@ -23,39 +21,35 @@ const reducerImpl = (state, action) => {
 };
 
 export const FolderChooser = memo(() => {
-  const [open, setOpen] = useState(false);
+  const {
+    folderChooser: { opened },
+  } = useAppState();
   const [state, dispatch] = useReducer(reducerImpl, initialState);
   const actions = useActions();
 
-  useEffect(() => {
-    actions.setFolderId(state.folderId);
-  }, [state.folderId, actions]);
+  const submit = () => {
+    if (state.folderId) actions.setFolderId(state.folderId);
+    actions.closeFolderChooser();
+  };
 
   const isSubmitButtonEnabled = state.folderId !== null;
 
   return (
-    <Modal
-      size="tiny"
-      open={open}
-      onClose={() => setOpen(false)}
-      onOpen={() => setOpen(true)}
-      trigger={<Button className={styles.trigger}>Choose a folder</Button>}
-    >
-      <Modal.Header>Profile Picture</Modal.Header>
+    <Modal size="tiny" open={opened}>
+      <Modal.Header>Choose a folder</Modal.Header>
       <Modal.Content scrolling>
         <FolderChooserContext.Provider value={[state, dispatch]}>
           <List verticalAlign="top">
-            <Folder root name="/" id={1} />
+            <Folder root name="/" id={1} open />
           </List>
         </FolderChooserContext.Provider>
       </Modal.Content>
       <Modal.Actions>
-        <Button
-          disabled={!isSubmitButtonEnabled}
-          onClick={() => setOpen(false)}
-          primary
-        >
-          Proceed <Icon name="chevron right" />
+        <Button color="black" onClick={() => actions.closeFolderChooser()}>
+          Cancel
+        </Button>
+        <Button disabled={!isSubmitButtonEnabled} onClick={submit} positive>
+          See this folder
         </Button>
       </Modal.Actions>
     </Modal>

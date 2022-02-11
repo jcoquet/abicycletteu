@@ -1,10 +1,9 @@
 import _ from "lodash";
 import { useSession } from "next-auth/react";
 import { useContext, useState } from "react";
-import { List, Button, Icon } from "semantic-ui-react";
+import { List } from "semantic-ui-react";
 import useSWR from "swr";
 
-import styles from "./Folder.module.css";
 import { FolderChooserContext } from "./FolderChooser";
 
 const fetcher = url => fetch(url).then(r => r.json());
@@ -25,45 +24,30 @@ export const FolderList = ({ id }) => {
     return <List.Description>No sub folder</List.Description>;
 
   return (
-    <List.List>
+    <List selection>
       {data.data.list.map(folder => (
         <Folder key={folder.name} {...folder} />
       ))}
-    </List.List>
+    </List>
   );
 };
 
-export const Folder = ({ root = false, name, id }) => {
+export const Folder = ({ root = false, name, id, open = false }) => {
   const [state, dispatch] = useContext(FolderChooserContext);
-  const [isFolderOpen, setIsFolderOpen] = useState(false);
-  const handleClick = e => {
+  const [isFolderOpen, setIsFolderOpen] = useState(open);
+  const isFolderSelected = id === state.folderId;
+
+  const selectFolder = e => {
     e.stopPropagation();
     setIsFolderOpen(!isFolderOpen);
-  };
-
-  const handleFolderSelection = e => {
-    e.stopPropagation();
-    if (id === state.folderId) return;
     dispatch({ type: "select_folder", id });
   };
 
-  const isButtonActive = state.folderId === id;
-
   return (
-    <List.Item onClick={handleClick} className={styles.folder}>
+    <List.Item onClick={selectFolder} active={isFolderSelected}>
       <List.Icon name={isFolderOpen ? "folder open" : "folder"} />
       <List.Content>
-        {root ? "/" : name.split("/").pop()}
-        <Button
-          onClick={handleFolderSelection}
-          size="mini"
-          floated="right"
-          icon
-          toggle
-          active={isButtonActive}
-        >
-          <Icon name="eye" />
-        </Button>
+        <span>{root ? "/" : name.split("/").pop()}</span>
         {isFolderOpen && <FolderList id={id} />}
       </List.Content>
     </List.Item>
