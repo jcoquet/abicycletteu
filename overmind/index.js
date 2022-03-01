@@ -1,24 +1,15 @@
-import {
-  createStateHook,
-  createActionsHook,
-  createEffectsHook,
-  createReactionHook,
-} from "overmind-react";
-
 export const config = {
   state: {
     folderId: null,
-    folderChooser: {
-      opened: false,
-    },
+    folderChooserOpened: false,
     leaflet: {
       map: null,
     },
   },
   actions: {
     setFolderId: ({ state }, folderId) => (state.folderId = folderId),
-    closeFolderChooser: ({ state }) => (state.folderChooser.opened = false),
-    openFolderChooser: ({ state }) => (state.folderChooser.opened = true),
+    closeFolderChooser: ({ state }) => (state.folderChooserOpened = false),
+    openFolderChooser: ({ state }) => (state.folderChooserOpened = true),
     setMap: ({ state }, map) => (state.leaflet.map = () => map),
     zoomIn: ({ state }) => state.leaflet.map().zoomIn(),
     zoomOut: ({ state }) => state.leaflet.map().zoomOut(),
@@ -36,8 +27,3 @@ export const config = {
     },
   },
 };
-
-export const useAppState = createStateHook();
-export const useActions = createActionsHook();
-export const useEffects = createEffectsHook();
-export const useReaction = createReactionHook();

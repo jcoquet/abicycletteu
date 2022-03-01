@@ -1,6 +1,6 @@
 import { Button, Icon } from "semantic-ui-react";
 
-import { useActions } from "../overmind";
+import { useActions } from "../overmind/hooks";
 
 import styles from "./Tools.module.css";
 
@@ -17,16 +17,16 @@ export const Tools = () => {
 
   return (
     <Button.Group basic vertical className={styles.tools}>
-      <Button icon onClick={zoomIn}>
+      <Button aria-label="zoom in" icon onClick={zoomIn}>
         <Icon name="plus" />
       </Button>
-      <Button icon onClick={zoomOut}>
+      <Button aria-label="zoom out" icon onClick={zoomOut}>
         <Icon name="minus" />
       </Button>
-      <Button icon onClick={openFolderChooser}>
+      <Button aria-label="choose a folder" icon onClick={openFolderChooser}>
         <Icon name="folder open" />
       </Button>
-      <Button icon onClick={fitBounds}>
+      <Button aria-label="see all markers" icon onClick={fitBounds}>
         <Icon name="expand" />
       </Button>
     </Button.Group>

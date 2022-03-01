@@ -43,11 +43,17 @@ export const Folder = ({ root = false, name, id, open = false }) => {
     dispatch({ type: "select_folder", id });
   };
 
+  const folderName = root ? "/" : name.split("/").pop();
+
   return (
-    <List.Item onClick={selectFolder} active={isFolderSelected}>
+    <List.Item
+      aria-label={folderName}
+      onClick={selectFolder}
+      active={isFolderSelected}
+    >
       <List.Icon name={isFolderOpen ? "folder open" : "folder"} />
       <List.Content>
-        <span>{root ? "/" : name.split("/").pop()}</span>
+        <span>{folderName}</span>
         {isFolderOpen && <FolderList id={id} />}
       </List.Content>
     </List.Item>

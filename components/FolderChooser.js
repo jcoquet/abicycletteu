@@ -1,7 +1,7 @@
-import { createContext, memo, useReducer } from "react";
+import { createContext, useReducer } from "react";
 import { List, Modal, Button } from "semantic-ui-react";
 
-import { useActions, useAppState } from "../overmind";
+import { useActions, useAppState } from "../overmind/hooks";
 
 import { Folder } from "./Folder";
 
@@ -20,10 +20,8 @@ const reducerImpl = (state, action) => {
   }
 };
 
-export const FolderChooser = memo(() => {
-  const {
-    folderChooser: { opened },
-  } = useAppState();
+export const FolderChooser = () => {
+  const { folderChooserOpened: opened } = useAppState();
   const [state, dispatch] = useReducer(reducerImpl, initialState);
   const actions = useActions();
 
@@ -33,9 +31,8 @@ export const FolderChooser = memo(() => {
   };
 
   const isSubmitButtonEnabled = state.folderId !== null;
-
   return (
-    <Modal size="tiny" open={opened}>
+    <Modal role="dialog" size="tiny" open={opened}>
       <Modal.Header>Choose a folder</Modal.Header>
       <Modal.Content scrolling>
         <FolderChooserContext.Provider value={[state, dispatch]}>
@@ -54,6 +51,6 @@ export const FolderChooser = memo(() => {
       </Modal.Actions>
     </Modal>
   );
-});
+};
 
 FolderChooser.displayName = "FolderChooser";

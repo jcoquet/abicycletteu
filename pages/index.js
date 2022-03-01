@@ -9,7 +9,7 @@ import Layout from "../components/layout";
 import styles from "../styles/carte.module.css";
 import { FullscreenImage } from "../components/FullscreenImage";
 import { FolderChooser } from "../components/FolderChooser";
-import { useActions, useAppState } from "../overmind";
+import { useActions, useAppState } from "../overmind/hooks";
 import { Tools } from "../components/Tools.component";
 
 const fetcher = (session, folderId) => async () => {
