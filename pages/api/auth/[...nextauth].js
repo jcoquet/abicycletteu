@@ -97,7 +97,7 @@ export default NextAuth({
     // async redirect({ url, baseUrl }) { return baseUrl },
     // async session({ session, token, user }) { return session },
     // async jwt({ token, user, account, profile, isNewUser }) { return token }
-    async jwt({ token, user, account, profile, isNewUser }) {
+    async jwt({ token, user }) {
       if (user) {
         token.sid = user.sid;
         token.synotoken = user.synotoken;
@@ -105,7 +105,7 @@ export default NextAuth({
       }
       return token;
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       session.sid = token.sid;
       session.synotoken = token.synotoken;
       session.domain = token.domain;
